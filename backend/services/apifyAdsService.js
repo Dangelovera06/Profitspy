@@ -2,7 +2,7 @@ const axios = require('axios');
 const db = require('../database/db');
 
 const APIFY_API_TOKEN = process.env.APIFY_API_TOKEN;
-const APIFY_ACTOR_ID = 'curious_coder/meta-ads-scraper'; // or 'CfCwPWpfjpxQhOboS'
+const APIFY_ACTOR_ID = 'CfCwPWpfjpxQhOboS'; // Meta Ads Scraper actor ID
 const APIFY_API_BASE = 'https://api.apify.com/v2';
 
 class ApifyAdsService {
