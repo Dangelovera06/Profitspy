@@ -5,7 +5,7 @@ import Dashboard from './pages/Dashboard'
 import AdDetail from './pages/AdDetail'
 import SyncAds from './pages/SyncAds'
 import InfiniteHero from './components/ui/InfiniteHero'
-import { AnimatedGridPattern } from './components/ui/AnimatedGridPattern'
+import { GradientBars } from './components/ui/GradientBars'
 import './App.css'
 
 function AppContent() {
@@ -18,13 +18,9 @@ function AppContent() {
 
   return (
     <div className="app">
-      <AnimatedGridPattern
-        numSquares={60}
-        maxOpacity={0.15}
-        duration={3}
-        repeatDelay={1}
-        className="animated-background"
-      />
+      <div className="app-bg-solid" />
+      <GradientBars />
+      <div className="app-vignette" />
       <Header />
       <main className="main-content">
         <Routes>
@@ -45,13 +41,9 @@ function App() {
         <Route path="/*" element={
           <>
             <div className="app">
-              <AnimatedGridPattern
-                numSquares={60}
-                maxOpacity={0.15}
-                duration={3}
-                repeatDelay={1}
-                className="animated-background"
-              />
+              <div className="app-bg-solid" />
+              <GradientBars />
+              <div className="app-vignette" />
               <Header />
               <main className="main-content">
                 <Routes>
