@@ -1,0 +1,148 @@
+.infinite-hero-root {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #000000;
+  color: white;
+}
+
+.infinite-hero-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.shader-bg-full,
+.shader-canvas,
+.shader-canvas-inner {
+  height: 100%;
+  width: 100%;
+}
+
+.infinite-hero-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 50%,
+    transparent 40%,
+    black 100%
+  );
+}
+
+.infinite-hero-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+.infinite-hero-text {
+  text-align: center;
+  max-width: 900px;
+}
+
+.infinite-hero-title {
+  margin: 0 auto;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 60px rgba(255, 255, 255, 0.6),
+    0 0 90px rgba(255, 255, 255, 0.4);
+  filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.6));
+}
+
+.infinite-hero-description {
+  margin: 24px auto 0;
+  max-width: 640px;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.infinite-hero-cta {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: white;
+  backdrop-filter: blur(8px);
+  transition: all 0.5s;
+  cursor: pointer;
+}
+
+.btn-hero:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.btn-hero-link {
+  position: relative;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.5s;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.btn-hero-link:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .infinite-hero-title {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+
+  .infinite-hero-description {
+    font-size: 14px;
+  }
+
+  .infinite-hero-cta {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-hero,
+  .btn-hero-link {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
