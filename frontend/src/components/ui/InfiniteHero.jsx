@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { AnimatedGridPattern } from './AnimatedGridPattern';
+import { GradientBars } from './GradientBars';
 import './InfiniteHero.css';
 
 export default function InfiniteHero() {
@@ -19,16 +19,8 @@ export default function InfiniteHero() {
 
   return (
     <div className="infinite-hero-root">
-      <div className="infinite-hero-bg">
-        <AnimatedGridPattern
-          numSquares={80}
-          maxOpacity={0.2}
-          duration={4}
-          repeatDelay={1}
-          className="hero-grid-pattern"
-        />
-      </div>
-
+      <div className="infinite-hero-bg-solid" />
+      <GradientBars />
       <div className="infinite-hero-vignette" />
 
       <div className="infinite-hero-content">
