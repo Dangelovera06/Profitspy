@@ -1,24 +1,25 @@
 # ProfitSpy
 
-A powerful web platform that integrates with the Meta Ads Library API to help marketers discover, analyze, and organize effective advertising campaigns from across Meta's advertising ecosystem.
+A powerful web platform that helps marketers discover, analyze, and recreate winning advertising campaigns from Meta's advertising ecosystem using Apify's scraper - no Meta API access required!
 
 ![Platform Preview](https://via.placeholder.com/800x400?text=ProfitSpy)
 
 ## 🌟 Features
 
-- **Meta Ads Library Integration**: Seamlessly fetch ads from Meta's public Ads Library API
+- **Apify Scraper Integration**: Fetch ads using Apify's powerful scraper - no Meta API approval needed!
 - **Smart Performance Scoring**: Automatically calculate performance scores based on impressions, spend efficiency, and engagement metrics
-- **Advanced Filtering**: Search and filter ads by keyword, status, performance score, and more
-- **Beautiful Modern UI**: Clean, responsive interface built with React
+- **Advanced Filtering**: Search and filter ads by keyword, creator, status, performance score, and more
+- **Beautiful Modern UI**: Clean, responsive black & white interface with animated backgrounds
 - **Detailed Analytics**: View comprehensive ad details, targeting information, and performance metrics
-- **Real-time Sync**: Manual and automatic synchronization of ads from Meta's API
+- **Recreation Scripts**: Generate ad recreation scripts with one click
+- **Real-time Sync**: Manual synchronization with configurable ad limits
 - **Organized Data**: SQLite database for efficient storage and retrieval of ad data
 
 ## 📋 Prerequisites
 
 - Node.js (v16 or higher)
 - npm or yarn
-- Meta Access Token (from Facebook for Developers)
+- Apify API Token (free tier: $5/month credits) - [Get yours here](https://console.apify.com/account/integrations)
 
 ## 🚀 Quick Start
 
@@ -38,30 +39,28 @@ This will install dependencies for both the backend and frontend.
 
 ### 3. Configure the backend
 
-Create a `.env` file in the `backend` directory:
+Create a `.env` file in the `backend` directory with your Apify API token:
 
 ```bash
 cd backend
-cp .env.example .env
 ```
 
-Edit the `.env` file and add your Meta access token:
+Create `.env` file:
 
 ```env
-# Meta Ads Library API Configuration
-META_ACCESS_TOKEN=your_actual_token_here
-META_API_VERSION=v19.0
+# Apify Configuration
+# Get your token from: https://console.apify.com/account/integrations
+APIFY_API_TOKEN=your_apify_token_here
 
 # Server Configuration
 PORT=3001
-NODE_ENV=development
 
-# Database
-DB_PATH=./database/ads.db
-
-# Sync Configuration (in minutes)
+# Optional: Enable automatic background syncing (uses credits)
+ENABLE_AUTO_SYNC=false
 SYNC_INTERVAL=60
 ```
+
+**📖 For detailed Apify setup instructions, see [APIFY_SETUP.md](./APIFY_SETUP.md)**
 
 ### 4. Start the application
 
@@ -75,17 +74,20 @@ This will start:
 - Backend API on `http://localhost:3001`
 - Frontend on `http://localhost:3000`
 
-## 🔑 Getting a Meta Access Token
+## 🔑 Getting an Apify API Token
 
-1. Go to [Meta for Developers](https://developers.facebook.com/)
-2. Create an app or use an existing one
-3. Navigate to Tools > Graph API Explorer
-4. Select your app and generate an access token with appropriate permissions
-5. For production use, generate a long-lived token
+1. Sign up for a free account at [Apify](https://apify.com/)
+2. Go to [Account Integrations](https://console.apify.com/account/integrations)
+3. Copy your Personal API token
+4. Add it to your backend `.env` file as `APIFY_API_TOKEN`
 
-**Required Permissions:**
-- `ads_read` (if available)
-- Access to the Ads Library API endpoint
+**Free Tier Benefits:**
+- $5 in free monthly credits
+- Approximately 50-100 ad scrapes per month
+- No Meta API approval process required
+- No Facebook developer account needed
+
+**Detailed setup guide: [APIFY_SETUP.md](./APIFY_SETUP.md)**
 
 ## 📁 Project Structure
 
@@ -98,10 +100,10 @@ meta-ads-platform/
 │   ├── routes/
 │   │   └── ads.js             # API routes for ads
 │   ├── services/
-│   │   └── metaAdsService.js  # Meta API integration
+│   │   ├── apifyAdsService.js # Apify scraper integration
+│   │   └── metaAdsService.js  # Legacy Meta API (deprecated)
 │   ├── server.js              # Express server
-│   ├── package.json
-│   └── .env.example
+│   └── package.json
 │
 ├── frontend/
 │   ├── src/
@@ -158,7 +160,8 @@ Content-Type: application/json
 
 {
   "searchTerms": "fitness",
-  "country": "US"
+  "country": "US",
+  "maxAds": 50
 }
 ```
 
@@ -186,10 +189,10 @@ The platform automatically calculates a performance score (0-100) for each ad ba
 - Direct link to view the original ad on Meta
 
 ### Sync Page
-- Manual ad synchronization from Meta API
-- Country and keyword-based search
-- Real-time sync status updates
-- Helpful setup instructions
+- Manual ad synchronization via Apify scraper
+- Country, keyword, and ad limit configuration
+- Real-time sync status updates (typically 30-120 seconds)
+- In-app setup instructions with links
 
 ## 🔧 Configuration Options
 
@@ -197,15 +200,14 @@ The platform automatically calculates a performance score (0-100) for each ad ba
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `META_ACCESS_TOKEN` | Your Meta API access token | Required |
-| `META_API_VERSION` | Meta API version | v19.0 |
+| `APIFY_API_TOKEN` | Your Apify API token | Required |
 | `PORT` | Backend server port | 3001 |
-| `DB_PATH` | SQLite database path | ./database/ads.db |
+| `ENABLE_AUTO_SYNC` | Enable automatic syncing | false |
 | `SYNC_INTERVAL` | Auto-sync interval (minutes) | 60 |
 
 ### Automatic Sync
 
-The platform automatically fetches new ads every hour (configurable via `SYNC_INTERVAL`). To disable automatic sync, comment out the cron job in `backend/server.js`.
+Automatic sync is **disabled by default** to conserve Apify credits. Set `ENABLE_AUTO_SYNC=true` in your `.env` file to enable hourly automatic syncing. Manual sync via the UI is recommended.
 
 ## 📊 Database Schema
 
@@ -245,10 +247,11 @@ npm run build
 
 ## 🔒 Security Considerations
 
-- **Never commit your `.env` file** or expose your Meta access token
+- **Never commit your `.env` file** or expose your Apify API token
 - Use environment variables for all sensitive configuration
 - Implement rate limiting for production API
 - Add authentication for user-specific features
+- Monitor Apify usage to avoid unexpected charges
 - Regularly rotate API tokens
 
 ## 🛠️ Development
@@ -289,28 +292,39 @@ MIT License - feel free to use this project for personal or commercial purposes.
 
 ## 🙏 Acknowledgments
 
-- Meta Ads Library API for providing public ad data
+- [Apify](https://apify.com/) for providing the Meta Ads scraper
+- Meta Ads Library for public ad data
 - React and Vite for the frontend framework
 - Express.js for the backend API
 - SQLite for lightweight data storage
+- [shadcn/ui](https://ui.shadcn.com/) for UI component inspiration
 
 ## 📞 Support
 
 For issues or questions:
-1. Check the [Meta Ads Library API documentation](https://www.facebook.com/ads/library/api/)
-2. Review the troubleshooting section below
-3. Open an issue in the project repository
+1. Check the [APIFY_SETUP.md](./APIFY_SETUP.md) guide
+2. Review [Apify documentation](https://docs.apify.com/)
+3. Check the troubleshooting section above
+4. Open an issue in the project repository
 
 ## 🐛 Troubleshooting
 
-### "META_ACCESS_TOKEN not configured"
+### "APIFY_API_TOKEN not configured"
 - Ensure you've created a `.env` file in the `backend` directory
-- Verify your access token is valid and not expired
+- Get your token from: https://console.apify.com/account/integrations
+- Verify there are no extra spaces in your token
+- Restart the backend server after adding the token
+
+### "Apify scraper timeout"
+- Reduce the `maxAds` parameter (try 20-30 instead of 100)
+- Check your Apify account has available credits
+- Try again in a few minutes (temporary Apify service issue)
 
 ### "No ads found"
 - Run a manual sync from the Sync page
-- Check that your Meta access token has the correct permissions
-- Verify your search parameters aren't too restrictive
+- Try broader search terms or leave search empty
+- Verify the selected country has ads in the library
+- Check Apify service status
 
 ### Database errors
 - Delete the `backend/database/ads.db` file and restart the server
@@ -320,6 +334,8 @@ For issues or questions:
 - Ensure the backend is running on port 3001
 - Check the proxy configuration in `frontend/vite.config.js`
 - Verify CORS settings in the backend
+
+**For more detailed troubleshooting, see [APIFY_SETUP.md](./APIFY_SETUP.md)**
 
 ---
 

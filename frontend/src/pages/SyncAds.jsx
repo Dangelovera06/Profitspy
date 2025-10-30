@@ -7,6 +7,7 @@ import './SyncAds.css'
 function SyncAds() {
   const [searchTerms, setSearchTerms] = useState('')
   const [country, setCountry] = useState('US')
+  const [maxAds, setMaxAds] = useState(50)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
@@ -20,11 +21,12 @@ function SyncAds() {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/sync`, {
         searchTerms,
-        country
+        country,
+        maxAds
       })
-      setResult(response.data.message)
+      setResult(response.data.message || `Successfully synced ${response.data.count} ads!`)
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to sync ads. Please check your API configuration.')
+      setError(err.response?.data?.error || 'Failed to sync ads. Please check your Apify API token in backend .env file.')
     } finally {
       setLoading(false)
     }
@@ -34,7 +36,7 @@ function SyncAds() {
     <div className="sync-ads container">
       <div className="sync-header">
         <h1>Sync Winning Ads</h1>
-        <p>Fetch and import high-performing ads to analyze and recreate</p>
+        <p>Fetch high-performing ads using Apify's powerful scraper - no Meta API required!</p>
       </div>
 
       <div className="sync-content">
@@ -77,6 +79,22 @@ function SyncAds() {
               </select>
             </div>
 
+            <div className="form-group">
+              <label htmlFor="maxAds">
+                Maximum Ads
+                <span className="label-hint">Number of ads to fetch (10-100)</span>
+              </label>
+              <input
+                id="maxAds"
+                type="number"
+                min="10"
+                max="100"
+                step="10"
+                value={maxAds}
+                onChange={(e) => setMaxAds(parseInt(e.target.value))}
+              />
+            </div>
+
             <button
               type="submit"
               className="btn btn-primary btn-sync"
@@ -115,30 +133,39 @@ function SyncAds() {
           <h2>How it works</h2>
           <ol className="info-list">
             <li>
-              <strong>Configure your API token:</strong> Add your access token to the backend 
-              <code>.env</code> file
+              <strong>Get Apify API token:</strong> Sign up at{' '}
+              <a href="https://apify.com" target="_blank" rel="noopener noreferrer">apify.com</a> 
+              {' '}and get your API token from{' '}
+              <a href="https://console.apify.com/account/integrations" target="_blank" rel="noopener noreferrer">
+                account integrations
+              </a>
             </li>
             <li>
-              <strong>Choose search parameters:</strong> Enter keywords and select a target country
+              <strong>Configure backend:</strong> Add <code>APIFY_API_TOKEN=your_token</code> to 
+              your backend <code>.env</code> file and restart the server
             </li>
             <li>
-              <strong>Sync ads:</strong> Click the button to fetch winning ads from the library
+              <strong>Choose parameters:</strong> Enter keywords, select country, and set max ads to fetch
             </li>
             <li>
-              <strong>Automatic scoring:</strong> The system calculates performance scores based on 
-              impressions, spend, and other metrics
+              <strong>Start scraping:</strong> Click sync and wait ~30-120 seconds for Apify to 
+              scrape the ads (free tier: $5/month credits)
+            </li>
+            <li>
+              <strong>Automatic analysis:</strong> Performance scores are calculated based on 
+              impressions, spend, reach, and engagement metrics
             </li>
             <li>
               <strong>Browse and recreate:</strong> View all synced ads on the dashboard with 
-              advanced filtering and recreation scripts
+              recreation scripts ready to copy
             </li>
           </ol>
 
           <div className="info-note">
             <AlertCircle size={16} />
             <p>
-              <strong>Note:</strong> You need a valid API access token to use this feature. 
-              Configure it in your backend environment settings.
+              <strong>Quick Start:</strong> See <code>APIFY_SETUP.md</code> in the project root for 
+              detailed setup instructions. Free tier includes $5 in monthly credits!
             </p>
           </div>
         </div>
