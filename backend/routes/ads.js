@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       order = 'DESC',
       status,
       search,
+      searchType = 'keyword',
       minScore
     } = req.query;
 
@@ -31,15 +32,24 @@ router.get('/', async (req, res) => {
       params.push(parseFloat(minScore));
     }
 
-    // Search in ad content and page name
+    // Search based on type
     if (search) {
-      whereConditions.push(`(
-        page_name LIKE ? OR 
-        ad_creative_bodies LIKE ? OR 
-        ad_creative_link_titles LIKE ?
-      )`);
       const searchPattern = `%${search}%`;
-      params.push(searchPattern, searchPattern, searchPattern);
+      
+      if (searchType === 'creator' || searchType === 'advertiser') {
+        // Search by page name (advertiser/creator)
+        whereConditions.push('page_name LIKE ?');
+        params.push(searchPattern);
+      } else {
+        // Default keyword search - search in ad content
+        whereConditions.push(`(
+          page_name LIKE ? OR 
+          ad_creative_bodies LIKE ? OR 
+          ad_creative_link_titles LIKE ? OR
+          ad_creative_link_descriptions LIKE ?
+        )`);
+        params.push(searchPattern, searchPattern, searchPattern, searchPattern);
+      }
     }
 
     const whereClause = whereConditions.length > 0 

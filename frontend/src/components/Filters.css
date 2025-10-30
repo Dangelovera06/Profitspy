@@ -4,27 +4,33 @@
 
 .filters-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
   align-items: center;
 }
 
 .search-box {
   flex: 1;
-  min-width: 300px;
+  min-width: 250px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  gap: 10px;
+  padding: 8px 14px;
+  background: rgba(20, 20, 35, 0.6);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
   transition: all 0.3s;
 }
 
 .search-box:focus-within {
   border-color: var(--primary);
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+  background: rgba(20, 20, 35, 0.8);
+}
+
+.search-box svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .search-box input {
@@ -32,52 +38,46 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
+  font-weight: 400;
 }
 
 .search-box input::placeholder {
   color: var(--text-muted);
+  font-weight: 300;
 }
 
-.filter-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-group label {
-  font-size: 14px;
-  font-weight: 500;
+.filter-select {
+  padding: 8px 14px;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
+  font-size: 13px;
+  background: rgba(20, 20, 35, 0.6);
   color: var(--text-secondary);
-}
-
-.filter-group select,
-.filter-group input[type="number"] {
-  padding: 10px 16px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 14px;
-  background: var(--bg-elevated);
-  color: var(--text-primary);
   cursor: pointer;
   outline: none;
   transition: all 0.3s;
+  font-weight: 400;
+  min-width: 120px;
 }
 
-.filter-group input[type="number"] {
-  width: 80px;
+.filter-select:hover {
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(20, 20, 35, 0.8);
+  color: var(--text-primary);
 }
 
-.filter-group select:hover,
-.filter-group input[type="number"]:hover {
+.filter-select:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+  background: rgba(20, 20, 35, 0.9);
+  color: var(--text-primary);
+}
+
+.filter-select option {
   background: var(--bg-card);
-}
-
-.filter-group select:focus,
-.filter-group input[type="number"]:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  color: var(--text-primary);
+  padding: 8px;
 }
 

@@ -19,6 +19,7 @@ function Dashboard() {
   })
   const [filters, setFilters] = useState({
     search: '',
+    searchType: 'keyword',
     status: '',
     minScore: '',
     sortBy: 'performance_score',

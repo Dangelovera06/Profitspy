@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { BarChart3, RefreshCw, Home } from 'lucide-react'
+import { RefreshCw, Home } from 'lucide-react'
 import './Header.css'
 
 function Header() {
@@ -11,7 +11,6 @@ function Header() {
       <div className="container">
         <div className="header-content">
           <Link to="/" className="logo">
-            <BarChart3 size={32} />
             <span>ProfitSpy</span>
           </Link>
           
