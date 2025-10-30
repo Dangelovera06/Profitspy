@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../config'
 import axios from 'axios'
-import { RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
+import { RefreshCw, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react'
 import './SyncAds.css'
 
 function SyncAds() {
@@ -11,6 +12,16 @@ function SyncAds() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
+  const navigate = useNavigate()
+
+  // Check for ongoing sync on mount
+  useEffect(() => {
+    const syncStatus = localStorage.getItem('syncStatus')
+    if (syncStatus === 'syncing') {
+      setLoading(true)
+      setResult('Sync in progress... You can navigate away and come back.')
+    }
+  }, [])
 
   const handleSync = async (e) => {
     e.preventDefault()
@@ -18,18 +29,38 @@ function SyncAds() {
     setResult(null)
     setError(null)
 
-    try {
-      const response = await axios.post(`${API_BASE_URL}/api/sync`, {
-        searchTerms,
-        country,
-        maxAds
-      })
-      setResult(response.data.message || `Successfully synced ${response.data.count} ads!`)
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to sync ads. Please check your Apify API token in backend .env file.')
-    } finally {
+    // Store sync status for background sync
+    localStorage.setItem('syncStatus', 'syncing')
+    localStorage.setItem('syncParams', JSON.stringify({ searchTerms, country, maxAds }))
+
+    // Show immediate feedback
+    setResult('🔄 Syncing in background... You can go to Dashboard now!')
+
+    // Start sync in background (non-blocking)
+    axios.post(`${API_BASE_URL}/api/sync`, {
+      searchTerms,
+      country,
+      maxAds
+    }, {
+      timeout: 300000 // 5 minutes timeout
+    })
+    .then(response => {
+      localStorage.setItem('syncStatus', 'complete')
+      localStorage.setItem('syncResult', response.data.message || `Successfully synced ${response.data.count} ads!`)
+      setResult(response.data.message || `✅ Successfully synced ${response.data.count} ads!`)
       setLoading(false)
-    }
+    })
+    .catch(err => {
+      localStorage.setItem('syncStatus', 'error')
+      const errorMsg = err.response?.data?.error || 'Sync failed. Please try again.'
+      localStorage.setItem('syncError', errorMsg)
+      setError(errorMsg)
+      setLoading(false)
+    })
+  }
+
+  const goToDashboard = () => {
+    navigate('/dashboard')
   }
 
   return (
@@ -103,7 +134,7 @@ function SyncAds() {
               {loading ? (
                 <>
                   <div className="spinner-small"></div>
-                  Syncing...
+                  Syncing in Background...
                 </>
               ) : (
                 <>
@@ -117,7 +148,14 @@ function SyncAds() {
           {result && (
             <div className="alert alert-success">
               <CheckCircle size={20} />
-              <span>{result}</span>
+              <div className="alert-content">
+                <span>{result}</span>
+                {loading && (
+                  <button onClick={goToDashboard} className="btn btn-secondary btn-small">
+                    Go to Dashboard <ArrowRight size={16} />
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
@@ -130,42 +168,33 @@ function SyncAds() {
         </div>
 
         <div className="card sync-info-card">
-          <h2>How it works</h2>
+          <h2>How to Use</h2>
           <ol className="info-list">
             <li>
-              <strong>Get Apify API token:</strong> Sign up at{' '}
-              <a href="https://apify.com" target="_blank" rel="noopener noreferrer">apify.com</a> 
-              {' '}and get your API token from{' '}
-              <a href="https://console.apify.com/account/integrations" target="_blank" rel="noopener noreferrer">
-                account integrations
-              </a>
+              <strong>Enter search terms:</strong> Type keywords like "fitness", "ecommerce", or "saas" 
+              to find specific types of ads, or leave blank to get popular ads
             </li>
             <li>
-              <strong>Configure backend:</strong> Add <code>APIFY_API_TOKEN=your_token</code> to 
-              your backend <code>.env</code> file and restart the server
+              <strong>Select country:</strong> Choose which country's ads you want to analyze
             </li>
             <li>
-              <strong>Choose parameters:</strong> Enter keywords, select country, and set max ads to fetch
+              <strong>Set max ads:</strong> Pick how many ads to fetch (10-100). More ads = more data but longer sync time
             </li>
             <li>
-              <strong>Start scraping:</strong> Click sync and wait ~30-120 seconds for Apify to 
-              scrape the ads (free tier: $5/month credits)
+              <strong>Click Sync Ads:</strong> Start the sync process - it runs in the background so you 
+              can navigate to the Dashboard immediately
             </li>
             <li>
-              <strong>Automatic analysis:</strong> Performance scores are calculated based on 
-              impressions, spend, reach, and engagement metrics
-            </li>
-            <li>
-              <strong>Browse and recreate:</strong> View all synced ads on the dashboard with 
-              recreation scripts ready to copy
+              <strong>View results:</strong> Go to Dashboard to see all synced ads with performance scores, 
+              images, videos, and recreation scripts
             </li>
           </ol>
 
           <div className="info-note">
             <AlertCircle size={16} />
             <p>
-              <strong>Quick Start:</strong> See <code>APIFY_SETUP.md</code> in the project root for 
-              detailed setup instructions. Free tier includes $5 in monthly credits!
+              <strong>Pro Tip:</strong> Sync runs in the background! Click "Go to Dashboard" after starting 
+              and your ads will appear automatically when ready (~30-120 seconds).
             </p>
           </div>
         </div>

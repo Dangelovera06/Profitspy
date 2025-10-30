@@ -61,10 +61,18 @@ class ApifyAdsService {
       );
 
       const ads = datasetResponse.data;
-      console.log(`Fetched ${ads.length} ads from Apify`);
+      console.log(`Fetched ${ads.length} ads from Apify dataset`);
+      
+      // Log sample of first ad to debug data structure
+      if (ads.length > 0) {
+        console.log('Sample ad structure:', JSON.stringify(ads[0], null, 2).substring(0, 500));
+      }
 
       // Transform Apify results to match our database schema
-      return this.transformApifyAds(ads);
+      const transformedAds = this.transformApifyAds(ads);
+      console.log(`Transformed ${transformedAds.length} ads successfully`);
+      
+      return transformedAds;
     } catch (error) {
       if (error.code === 'ECONNABORTED') {
         throw new Error('Apify scraper timeout. Try reducing maxAds or try again later.');
@@ -78,53 +86,96 @@ class ApifyAdsService {
    * Transform Apify ad data to match Meta API format
    */
   transformApifyAds(apifyAds) {
-    return apifyAds.map(ad => {
-      // Apify scraper returns similar structure to Meta API
-      // but we need to ensure all fields are properly mapped
+    return apifyAds.map((ad, index) => {
+      try {
+        // Apify scraper returns similar structure to Meta API
+        // but we need to ensure all fields are properly mapped
+        
+        // Extract images and videos from various possible fields
+        const images = ad.images || ad.ad_creative_link_image_hashes || ad.adImages || ad.imageUrls || 
+                       ad.cards?.[0]?.thumbnail || ad.snapshot?.images || [];
+        const videos = ad.videos || ad.videoUrls || ad.ad_creative_videos || 
+                       ad.cards?.[0]?.video || ad.snapshot?.videos || [];
+        
+        // Determine media type
+        let mediaType = 'text';
+        if (videos && videos.length > 0) {
+          mediaType = 'video';
+        } else if (images && images.length > 0) {
+          mediaType = 'image';
+        }
+        
+        // Extract landing page URL
+        const landingPageUrl = ad.landingPageUrl || ad.linkUrl || ad.ad_creative_link_url || 
+                               ad.link || ad.cards?.[0]?.link || null;
       
-      // Extract images and videos from various possible fields
-      const images = ad.images || ad.ad_creative_link_image_hashes || ad.adImages || ad.imageUrls || [];
-      const videos = ad.videos || ad.videoUrls || ad.ad_creative_videos || [];
-      
-      // Determine media type
-      let mediaType = 'text';
-      if (videos && videos.length > 0) {
-        mediaType = 'video';
-      } else if (images && images.length > 0) {
-        mediaType = 'image';
+        return {
+          id: ad.id || ad.adid || ad.adArchiveID || `apify_${Date.now()}_${index}`,
+          ad_creative_bodies: ad.ad_creative_bodies || ad.adCreativeBodies || ad.body || 
+                             ad.adCreativeBody || ad.cards?.[0]?.body || [],
+          ad_creative_link_captions: ad.ad_creative_link_captions || ad.linkCaption || 
+                                    ad.cards?.[0]?.caption || [],
+          ad_creative_link_titles: ad.ad_creative_link_titles || ad.linkTitle || 
+                                  ad.cards?.[0]?.title || [],
+          ad_creative_link_descriptions: ad.ad_creative_link_descriptions || ad.linkDescription || 
+                                        ad.cards?.[0]?.description || [],
+          ad_delivery_start_time: ad.ad_delivery_start_time || ad.startDate || ad.deliveryStartTime || 
+                                 ad.startedRunningAt,
+          ad_delivery_stop_time: ad.ad_delivery_stop_time || ad.endDate || ad.deliveryStopTime || 
+                                ad.stoppedRunningAt || null,
+          ad_snapshot_url: ad.ad_snapshot_url || ad.snapshotUrl || ad.adArchiveID || ad.adSnapshotURL,
+          age_country_gender_reach_breakdown: ad.age_country_gender_reach_breakdown || ad.reachBreakdown || [],
+          bylines: ad.bylines || ad.pageName || ad.advertiserName || '',
+          currency: ad.currency || 'USD',
+          demographic_distribution: ad.demographic_distribution || ad.demographics || [],
+          estimated_audience_size: ad.estimated_audience_size || ad.estimatedAudienceSize || 
+                                  ad.potentialReach || null,
+          impressions: ad.impressions || ad.impressionsLower || ad.spend?.lower_bound || '0',
+          languages: ad.languages || ad.targetLanguages || [],
+          page_id: ad.page_id || ad.pageId || ad.page?.id || '',
+          page_name: ad.page_name || ad.pageName || ad.advertiserName || ad.page?.name || 'Unknown',
+          publisher_platforms: ad.publisher_platforms || ad.platforms || ad.publisherPlatforms || [],
+          spend: ad.spend || ad.spendLower || ad.spend?.lower_bound || '0',
+          target_ages: ad.target_ages || ad.targetAges || ad.ageRange || '',
+          target_gender: ad.target_gender || ad.targetGender || 'ALL',
+          target_locations: ad.target_locations || ad.targetLocations || ad.geoTargeting || [],
+          media_type: mediaType,
+          images: Array.isArray(images) ? images : (images ? [images] : []),
+          videos: Array.isArray(videos) ? videos : (videos ? [videos] : []),
+          landing_page_url: landingPageUrl
+        };
+      } catch (error) {
+        console.error(`Error transforming ad at index ${index}:`, error.message);
+        // Return a basic ad structure to avoid losing all data
+        return {
+          id: `apify_error_${Date.now()}_${index}`,
+          ad_creative_bodies: [ad.body || 'No content available'],
+          ad_creative_link_captions: [],
+          ad_creative_link_titles: [],
+          ad_creative_link_descriptions: [],
+          ad_delivery_start_time: new Date().toISOString(),
+          ad_delivery_stop_time: null,
+          ad_snapshot_url: '',
+          age_country_gender_reach_breakdown: [],
+          bylines: '',
+          currency: 'USD',
+          demographic_distribution: [],
+          estimated_audience_size: null,
+          impressions: '0',
+          languages: [],
+          page_id: '',
+          page_name: ad.pageName || ad.advertiserName || 'Unknown',
+          publisher_platforms: [],
+          spend: '0',
+          target_ages: '',
+          target_gender: 'ALL',
+          target_locations: [],
+          media_type: 'text',
+          images: [],
+          videos: [],
+          landing_page_url: null
+        };
       }
-      
-      // Extract landing page URL
-      const landingPageUrl = ad.landingPageUrl || ad.linkUrl || ad.ad_creative_link_url || ad.link || null;
-      
-      return {
-        id: ad.id || ad.adid || `apify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        ad_creative_bodies: ad.ad_creative_bodies || ad.adCreativeBodies || ad.body || [],
-        ad_creative_link_captions: ad.ad_creative_link_captions || ad.linkCaption || [],
-        ad_creative_link_titles: ad.ad_creative_link_titles || ad.linkTitle || [],
-        ad_creative_link_descriptions: ad.ad_creative_link_descriptions || ad.linkDescription || [],
-        ad_delivery_start_time: ad.ad_delivery_start_time || ad.startDate || ad.deliveryStartTime,
-        ad_delivery_stop_time: ad.ad_delivery_stop_time || ad.endDate || ad.deliveryStopTime || null,
-        ad_snapshot_url: ad.ad_snapshot_url || ad.snapshotUrl || ad.adArchiveID,
-        age_country_gender_reach_breakdown: ad.age_country_gender_reach_breakdown || ad.reachBreakdown || [],
-        bylines: ad.bylines || ad.pageName || '',
-        currency: ad.currency || 'USD',
-        demographic_distribution: ad.demographic_distribution || ad.demographics || [],
-        estimated_audience_size: ad.estimated_audience_size || ad.estimatedAudienceSize || null,
-        impressions: ad.impressions || ad.impressionsLower || '0',
-        languages: ad.languages || [],
-        page_id: ad.page_id || ad.pageId || '',
-        page_name: ad.page_name || ad.pageName || ad.advertiserName || 'Unknown',
-        publisher_platforms: ad.publisher_platforms || ad.platforms || [],
-        spend: ad.spend || ad.spendLower || '0',
-        target_ages: ad.target_ages || ad.targetAges || '',
-        target_gender: ad.target_gender || ad.targetGender || 'ALL',
-        target_locations: ad.target_locations || ad.targetLocations || [],
-        media_type: mediaType,
-        images: images,
-        videos: videos,
-        landing_page_url: landingPageUrl
-      };
     });
   }
 

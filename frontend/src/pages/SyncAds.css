@@ -113,6 +113,22 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+.alert-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 13px;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .sync-info-card h2 {
   font-size: 20px;
   font-weight: 600;
