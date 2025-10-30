@@ -11,6 +11,8 @@ export default defineConfig({
         changeOrigin: true
       }
     }
-  }
+  },
+  // Copy public folder to dist for Render deployment
+  publicDir: 'public'
 })
 
