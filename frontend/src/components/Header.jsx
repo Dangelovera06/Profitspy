@@ -12,7 +12,7 @@ function Header() {
         <div className="header-content">
           <Link to="/" className="logo">
             <BarChart3 size={32} />
-            <span>Meta Ads Discovery</span>
+            <span>ProfitSpy</span>
           </Link>
           
           <nav className="nav">

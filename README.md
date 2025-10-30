@@ -1,8 +1,8 @@
-# Meta Ads Discovery Platform
+# ProfitSpy
 
 A powerful web platform that integrates with the Meta Ads Library API to help marketers discover, analyze, and organize effective advertising campaigns from across Meta's advertising ecosystem.
 
-![Platform Preview](https://via.placeholder.com/800x400?text=Meta+Ads+Discovery+Platform)
+![Platform Preview](https://via.placeholder.com/800x400?text=ProfitSpy)
 
 ## 🌟 Features
 

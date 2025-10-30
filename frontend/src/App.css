@@ -2,10 +2,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .main-content {
   flex: 1;
   padding: 24px 0;
+  position: relative;
+  z-index: 2;
 }
 

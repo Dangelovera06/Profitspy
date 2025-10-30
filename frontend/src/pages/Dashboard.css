@@ -10,13 +10,17 @@
 .dashboard-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .dashboard-header p {
   font-size: 16px;
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 .loading-container {
@@ -29,7 +33,7 @@
 }
 
 .loading-container p {
-  color: var(--gray-600);
+  color: var(--text-secondary);
   font-size: 16px;
 }
 
@@ -41,12 +45,12 @@
 .empty-state h3 {
   font-size: 20px;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .empty-state p {
-  color: var(--gray-600);
+  color: var(--text-secondary);
 }
 
 .ads-grid {
@@ -61,14 +65,15 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
 }
 
 .pagination-info {
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,11 +83,11 @@
 .pagination-total {
   font-size: 13px;
   font-weight: 400;
-  color: var(--gray-500);
+  color: var(--text-secondary);
 }
 
 .pagination button:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 

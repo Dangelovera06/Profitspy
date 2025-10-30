@@ -11,11 +11,12 @@
   text-decoration: none;
   font-weight: 500;
   margin-bottom: 24px;
-  transition: gap 0.2s;
+  transition: all 0.3s;
 }
 
 .back-link:hover {
   gap: 12px;
+  text-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
 }
 
 .detail-header {
@@ -32,8 +33,12 @@
 .detail-header h1 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .detail-meta {
@@ -58,10 +63,23 @@
 .detail-sidebar h2 {
   font-size: 20px;
   font-weight: 600;
-  color: var(--gray-900);
+  color: var(--text-primary);
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 2px solid var(--gray-200);
+  border-bottom: 2px solid var(--border-color);
+  position: relative;
+}
+
+.detail-main h2::after,
+.detail-sidebar h2::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
 }
 
 .creative-section {
@@ -75,7 +93,7 @@
 .creative-section h3 {
   font-size: 14px;
   font-weight: 600;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -83,12 +101,17 @@
 
 .creative-text {
   padding: 12px 16px;
-  background: var(--gray-50);
+  background: rgba(59, 130, 246, 0.05);
   border-left: 3px solid var(--primary);
   border-radius: 4px;
   line-height: 1.6;
-  color: var(--gray-700);
+  color: var(--text-secondary);
   margin-bottom: 8px;
+  transition: background 0.3s;
+}
+
+.creative-text:hover {
+  background: rgba(59, 130, 246, 0.08);
 }
 
 .creative-text:last-child {
@@ -111,15 +134,23 @@
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: var(--gray-50);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s;
+}
+
+.metric:hover {
+  background: rgba(59, 130, 246, 0.08);
+  transform: translateX(4px);
 }
 
 .metric-icon {
   padding: 10px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
   color: var(--primary);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
 .metric-info {
@@ -128,14 +159,17 @@
 
 .metric-label {
   font-size: 13px;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .metric-value {
   font-size: 20px;
   font-weight: 700;
-  color: var(--gray-900);
+  color: var(--text-primary);
+  text-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
 }
 
 .targeting-info {
@@ -149,7 +183,12 @@
   gap: 12px;
   align-items: flex-start;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--border-color);
+  transition: padding-left 0.3s;
+}
+
+.targeting-item:hover {
+  padding-left: 8px;
 }
 
 .targeting-item:last-child {
@@ -164,14 +203,16 @@
 
 .targeting-label {
   font-size: 13px;
-  color: var(--gray-500);
+  color: var(--text-secondary);
   margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .targeting-value {
   font-size: 14px;
   font-weight: 500;
-  color: var(--gray-900);
+  color: var(--text-primary);
 }
 
 @media (max-width: 1024px) {
