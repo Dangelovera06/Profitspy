@@ -1,0 +1,68 @@
+.filters {
+  margin-bottom: 24px;
+}
+
+.filters-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.filter-group select,
+.filter-group input[type="number"] {
+  padding: 10px 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-group input[type="number"] {
+  width: 80px;
+}
+
+.filter-group select:hover,
+.filter-group input[type="number"]:hover {
+  border-color: var(--gray-400);
+}
+
+.filter-group select:focus,
+.filter-group input[type="number"]:focus {
+  border-color: var(--primary);
+}
+
