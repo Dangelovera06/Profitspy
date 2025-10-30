@@ -42,6 +42,10 @@ const init = () => {
         ad_status TEXT,
         performance_score REAL DEFAULT 0,
         engagement_rate REAL DEFAULT 0,
+        media_type TEXT,
+        images TEXT,
+        videos TEXT,
+        landing_page_url TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )

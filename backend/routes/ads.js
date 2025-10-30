@@ -84,7 +84,9 @@ router.get('/', async (req, res) => {
       ad_creative_link_descriptions: safeJsonParse(ad.ad_creative_link_descriptions),
       publisher_platforms: safeJsonParse(ad.publisher_platforms),
       target_locations: safeJsonParse(ad.target_locations),
-      languages: safeJsonParse(ad.languages)
+      languages: safeJsonParse(ad.languages),
+      images: safeJsonParse(ad.images),
+      videos: safeJsonParse(ad.videos)
     }));
 
     res.json({
@@ -122,7 +124,9 @@ router.get('/:id', async (req, res) => {
       demographic_distribution: safeJsonParse(ad.demographic_distribution),
       publisher_platforms: safeJsonParse(ad.publisher_platforms),
       target_locations: safeJsonParse(ad.target_locations),
-      languages: safeJsonParse(ad.languages)
+      languages: safeJsonParse(ad.languages),
+      images: safeJsonParse(ad.images),
+      videos: safeJsonParse(ad.videos)
     };
 
     res.json(parsedAd);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, TrendingUp, Calendar, Globe, Copy } from 'lucide-react'
+import { ExternalLink, TrendingUp, Calendar, Globe, Copy, Play, Image as ImageIcon } from 'lucide-react'
 import './AdCard.css'
 
 function AdCard({ ad }) {
@@ -9,6 +9,20 @@ function AdCard({ ad }) {
   const getFirstText = (arr) => {
     if (Array.isArray(arr) && arr.length > 0) return arr[0]
     return ''
+  }
+
+  const getFirstImage = () => {
+    if (ad.images && Array.isArray(ad.images) && ad.images.length > 0) {
+      return ad.images[0]
+    }
+    return null
+  }
+
+  const getFirstVideo = () => {
+    if (ad.videos && Array.isArray(ad.videos) && ad.videos.length > 0) {
+      return ad.videos[0]
+    }
+    return null
   }
 
   const formatDate = (dateString) => {
@@ -64,10 +78,48 @@ Platforms: ${ad.publisher_platforms ? ad.publisher_platforms.join(', ') : 'N/A'}
             )}
           </div>
         </div>
-        <span className={`badge ${ad.ad_status === 'ACTIVE' ? 'badge-success' : 'badge-danger'}`}>
-          {ad.ad_status}
-        </span>
+        <div className="ad-header-right">
+          <span className={`badge ${ad.ad_status === 'ACTIVE' ? 'badge-success' : 'badge-danger'}`}>
+            {ad.ad_status}
+          </span>
+          {ad.media_type && (
+            <span className="media-type-badge">
+              {ad.media_type === 'video' ? <Play size={14} /> : ad.media_type === 'image' ? <ImageIcon size={14} /> : null}
+              {ad.media_type}
+            </span>
+          )}
+        </div>
       </div>
+
+      {/* Media Preview */}
+      {(getFirstImage() || getFirstVideo()) && (
+        <div className="ad-media-preview">
+          {getFirstVideo() ? (
+            <div className="media-video-container">
+              <video 
+                src={getFirstVideo()} 
+                controls={false}
+                muted
+                className="ad-media-video"
+                poster={getFirstImage()}
+              />
+              <div className="video-overlay">
+                <Play size={32} />
+              </div>
+            </div>
+          ) : getFirstImage() ? (
+            <img 
+              src={getFirstImage()} 
+              alt="Ad creative" 
+              className="ad-media-image"
+              onError={(e) => {
+                e.target.style.display = 'none'
+                e.target.parentElement.style.display = 'none'
+              }}
+            />
+          ) : null}
+        </div>
+      )}
 
       <div className="ad-content">
         {getFirstText(ad.ad_creative_link_titles) && (
@@ -75,6 +127,17 @@ Platforms: ${ad.publisher_platforms ? ad.publisher_platforms.join(', ') : 'N/A'}
         )}
         {getFirstText(ad.ad_creative_bodies) && (
           <p className="ad-body">{getFirstText(ad.ad_creative_bodies)}</p>
+        )}
+        {ad.landing_page_url && (
+          <a 
+            href={ad.landing_page_url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="ad-landing-link"
+          >
+            <ExternalLink size={14} />
+            Visit Landing Page
+          </a>
         )}
       </div>
 

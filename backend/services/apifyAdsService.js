@@ -81,6 +81,22 @@ class ApifyAdsService {
     return apifyAds.map(ad => {
       // Apify scraper returns similar structure to Meta API
       // but we need to ensure all fields are properly mapped
+      
+      // Extract images and videos from various possible fields
+      const images = ad.images || ad.ad_creative_link_image_hashes || ad.adImages || ad.imageUrls || [];
+      const videos = ad.videos || ad.videoUrls || ad.ad_creative_videos || [];
+      
+      // Determine media type
+      let mediaType = 'text';
+      if (videos && videos.length > 0) {
+        mediaType = 'video';
+      } else if (images && images.length > 0) {
+        mediaType = 'image';
+      }
+      
+      // Extract landing page URL
+      const landingPageUrl = ad.landingPageUrl || ad.linkUrl || ad.ad_creative_link_url || ad.link || null;
+      
       return {
         id: ad.id || ad.adid || `apify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         ad_creative_bodies: ad.ad_creative_bodies || ad.adCreativeBodies || ad.body || [],
@@ -103,7 +119,11 @@ class ApifyAdsService {
         spend: ad.spend || ad.spendLower || '0',
         target_ages: ad.target_ages || ad.targetAges || '',
         target_gender: ad.target_gender || ad.targetGender || 'ALL',
-        target_locations: ad.target_locations || ad.targetLocations || []
+        target_locations: ad.target_locations || ad.targetLocations || [],
+        media_type: mediaType,
+        images: images,
+        videos: videos,
+        landing_page_url: landingPageUrl
       };
     });
   }
@@ -213,8 +233,12 @@ class ApifyAdsService {
             ad_status,
             performance_score,
             engagement_rate,
+            media_type,
+            images,
+            videos,
+            landing_page_url,
             updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         `, [
           ad.id,
           JSON.stringify(ad.ad_creative_bodies || []),
@@ -240,7 +264,11 @@ class ApifyAdsService {
           JSON.stringify(ad.target_locations || []),
           adStatus,
           performanceScore,
-          engagementRate
+          engagementRate,
+          ad.media_type,
+          JSON.stringify(ad.images || []),
+          JSON.stringify(ad.videos || []),
+          ad.landing_page_url
         ]);
         savedCount++;
       } catch (error) {
