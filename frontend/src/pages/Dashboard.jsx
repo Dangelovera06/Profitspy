@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import API_BASE_URL from '../config'
 import axios from 'axios'
 import AdCard from '../components/AdCard'
 import Filters from '../components/Filters'
@@ -48,7 +49,7 @@ function Dashboard() {
         }
       })
 
-      const response = await axios.get('/api/ads', { params })
+      const response = await axios.get(`${API_BASE_URL}/api/ads`, { params })
       setAds(response.data.data)
       setPagination(prev => ({ ...prev, ...response.data.pagination }))
     } catch (error) {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import API_BASE_URL from '../config'
 import axios from 'axios'
 import { RefreshCw, AlertCircle, CheckCircle } from 'lucide-react'
 import './SyncAds.css'
@@ -17,7 +18,7 @@ function SyncAds() {
     setError(null)
 
     try {
-      const response = await axios.post('/api/sync', {
+      const response = await axios.post(`${API_BASE_URL}/api/sync`, {
         searchTerms,
         country
       })

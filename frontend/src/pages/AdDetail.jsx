@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import API_BASE_URL from '../config'
 import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import { ArrowLeft, ExternalLink, Calendar, Globe, Target, DollarSign, Eye, TrendingUp } from 'lucide-react'
