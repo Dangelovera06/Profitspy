@@ -98,14 +98,13 @@ Platforms: ${ad.publisher_platforms ? ad.publisher_platforms.join(', ') : 'N/A'}
             <div className="media-video-container">
               <video 
                 src={getFirstVideo()} 
-                controls={false}
-                muted
+                controls
                 className="ad-media-video"
                 poster={getFirstImage()}
-              />
-              <div className="video-overlay">
-                <Play size={32} />
-              </div>
+                preload="metadata"
+              >
+                Your browser does not support video playback.
+              </video>
             </div>
           ) : getFirstImage() ? (
             <img 
@@ -128,35 +127,59 @@ Platforms: ${ad.publisher_platforms ? ad.publisher_platforms.join(', ') : 'N/A'}
         {getFirstText(ad.ad_creative_bodies) && (
           <p className="ad-body">{getFirstText(ad.ad_creative_bodies)}</p>
         )}
-        {ad.landing_page_url && (
-          <a 
-            href={ad.landing_page_url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="ad-landing-link"
-          >
-            <ExternalLink size={14} />
-            Visit Landing Page
-          </a>
+        {getFirstText(ad.ad_creative_link_descriptions) && (
+          <p className="ad-description">{getFirstText(ad.ad_creative_link_descriptions)}</p>
         )}
       </div>
 
-      <div className="ad-stats">
-        <div className="stat">
-          <div className="stat-label">Performance Score</div>
-          <div className={`stat-value ${getScoreColor(ad.performance_score)}`}>
-            <TrendingUp size={16} />
-            {ad.performance_score ? ad.performance_score.toFixed(1) : '0.0'}
+      {/* Landing Page Link - Prominent */}
+      {ad.landing_page_url && (
+        <a 
+          href={ad.landing_page_url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="ad-landing-link-prominent"
+        >
+          <ExternalLink size={16} />
+          <div className="landing-link-content">
+            <span className="landing-link-label">Ad Destination</span>
+            <span className="landing-link-url">
+              {(() => {
+                try {
+                  return new URL(ad.landing_page_url).hostname
+                } catch {
+                  return ad.landing_page_url
+                }
+              })()}
+            </span>
+          </div>
+        </a>
+      )}
+
+      {/* Ad Info */}
+      <div className="ad-info-grid">
+        <div className="info-item">
+          <div className="info-label">Score</div>
+          <div className={`info-value ${getScoreColor(ad.performance_score)}`}>
+            {ad.performance_score ? ad.performance_score.toFixed(1) : 'N/A'}
           </div>
         </div>
-        <div className="stat">
-          <div className="stat-label">Impressions</div>
-          <div className="stat-value">{ad.impressions || 'N/A'}</div>
+        <div className="info-item">
+          <div className="info-label">Platforms</div>
+          <div className="info-value">
+            {ad.publisher_platforms && ad.publisher_platforms.length > 0 
+              ? ad.publisher_platforms.slice(0, 2).join(', ') 
+              : 'N/A'}
+          </div>
         </div>
-        <div className="stat">
-          <div className="stat-label">Spend</div>
-          <div className="stat-value">
-            {ad.spend ? `${ad.currency || '$'}${ad.spend}` : 'N/A'}
+        <div className="info-item">
+          <div className="info-label">Age Range</div>
+          <div className="info-value">{ad.target_ages || 'N/A'}</div>
+        </div>
+        <div className="info-item">
+          <div className="info-label">Status</div>
+          <div className="info-value">
+            {ad.ad_delivery_stop_time ? '🔴 Stopped' : '🟢 Active'}
           </div>
         </div>
       </div>
