@@ -83,8 +83,8 @@ function Dashboard() {
     <div className="dashboard container">
       <div className="dashboard-header">
         <div>
-          <h1>Ad Discovery Dashboard</h1>
-          <p>Discover and analyze effective Meta ads from the Ads Library</p>
+          <h1>Find Winning Ads to Recreate</h1>
+          <p>Discover high-performing ads and recreate them for your campaigns</p>
         </div>
       </div>
 

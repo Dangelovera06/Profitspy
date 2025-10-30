@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ExternalLink, TrendingUp, Calendar, Globe } from 'lucide-react'
+import { ExternalLink, TrendingUp, Calendar, Globe, Copy } from 'lucide-react'
 import './AdCard.css'
 
 function AdCard({ ad }) {
+  const [copySuccess, setCopySuccess] = useState(false)
+
   const getFirstText = (arr) => {
     if (Array.isArray(arr) && arr.length > 0) return arr[0]
     return ''
@@ -22,6 +24,26 @@ function AdCard({ ad }) {
     if (score >= 70) return 'score-high'
     if (score >= 40) return 'score-medium'
     return 'score-low'
+  }
+
+  const handleGenerateScript = () => {
+    const script = `# Ad Recreation Script
+# Advertiser: ${ad.page_name || 'Unknown'}
+# Performance Score: ${ad.performance_score ? ad.performance_score.toFixed(1) : '0.0'}
+
+Title: ${getFirstText(ad.ad_creative_link_titles) || 'N/A'}
+Body: ${getFirstText(ad.ad_creative_bodies) || 'N/A'}
+Description: ${getFirstText(ad.ad_creative_link_descriptions) || 'N/A'}
+
+Target Locations: ${ad.target_locations ? ad.target_locations.join(', ') : 'N/A'}
+Target Ages: ${ad.target_ages || 'N/A'}
+Platforms: ${ad.publisher_platforms ? ad.publisher_platforms.join(', ') : 'N/A'}
+
+# TODO: Customize this ad copy for your campaign
+`
+    navigator.clipboard.writeText(script)
+    setCopySuccess(true)
+    setTimeout(() => setCopySuccess(false), 2000)
   }
 
   return (
@@ -80,17 +102,14 @@ function AdCard({ ad }) {
         <Link to={`/ad/${ad.id}`} className="btn btn-secondary">
           View Details
         </Link>
-        {ad.ad_snapshot_url && (
-          <a 
-            href={ad.ad_snapshot_url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="btn btn-primary"
-          >
-            <ExternalLink size={16} />
-            View Ad
-          </a>
-        )}
+        <button 
+          onClick={handleGenerateScript}
+          className="btn btn-primary"
+          title="Copy recreation script"
+        >
+          <Copy size={16} />
+          {copySuccess ? 'Copied!' : 'Recreate'}
+        </button>
       </div>
     </div>
   )

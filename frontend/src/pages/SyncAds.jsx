@@ -33,8 +33,8 @@ function SyncAds() {
   return (
     <div className="sync-ads container">
       <div className="sync-header">
-        <h1>Sync Ads from Meta Library</h1>
-        <p>Fetch and import ads from the Meta Ads Library API</p>
+        <h1>Sync Winning Ads</h1>
+        <p>Fetch and import high-performing ads to analyze and recreate</p>
       </div>
 
       <div className="sync-content">
@@ -115,31 +115,30 @@ function SyncAds() {
           <h2>How it works</h2>
           <ol className="info-list">
             <li>
-              <strong>Configure your API token:</strong> Add your Meta access token to the backend 
+              <strong>Configure your API token:</strong> Add your access token to the backend 
               <code>.env</code> file
             </li>
             <li>
               <strong>Choose search parameters:</strong> Enter keywords and select a target country
             </li>
             <li>
-              <strong>Sync ads:</strong> Click the button to fetch ads from the Meta Ads Library
+              <strong>Sync ads:</strong> Click the button to fetch winning ads from the library
             </li>
             <li>
               <strong>Automatic scoring:</strong> The system calculates performance scores based on 
               impressions, spend, and other metrics
             </li>
             <li>
-              <strong>Browse and analyze:</strong> View all synced ads on the dashboard with 
-              advanced filtering options
+              <strong>Browse and recreate:</strong> View all synced ads on the dashboard with 
+              advanced filtering and recreation scripts
             </li>
           </ol>
 
           <div className="info-note">
             <AlertCircle size={16} />
             <p>
-              <strong>Note:</strong> You need a valid Meta access token to use this feature. 
-              Visit the <a href="https://developers.facebook.com/docs/marketing-api/access" 
-              target="_blank" rel="noopener noreferrer">Meta for Developers</a> site to obtain one.
+              <strong>Note:</strong> You need a valid API access token to use this feature. 
+              Configure it in your backend environment settings.
             </p>
           </div>
         </div>
