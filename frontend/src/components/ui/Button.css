@@ -1,0 +1,80 @@
+.btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-base:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.btn-base:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Variants */
+.btn-variant-default {
+  background: #ffffff;
+  color: #000000;
+}
+
+.btn-variant-default:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+}
+
+.btn-variant-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-variant-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-variant-ghost {
+  background: transparent;
+  color: #ffffff;
+}
+
+.btn-variant-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Sizes */
+.btn-size-default {
+  height: 40px;
+  padding: 0 16px;
+}
+
+.btn-size-sm {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
+}
+
+.btn-size-lg {
+  height: 48px;
+  padding: 0 32px;
+  font-size: 16px;
+}
+
+.btn-size-icon {
+  height: 40px;
+  width: 40px;
+  padding: 0;
+}
+
